@@ -4,7 +4,7 @@
 
 ___
 
-This is a project to show that Smaers et al.'s (2016) new phylogenetic comparative method is problematic. A manuscript is in prep.
+This is a project to show that Smaers et al.'s (2016) new phylogenetic comparative method is problematic. A manuscript is currently submitted to the *Biological Journal of the Linnean Society*.
 
 ## Reproducible simulation study
 
@@ -21,22 +21,22 @@ Six separate simulation studies are included in our study. These simulations and
 
 ```
 # Figure 1
-source("Simulations1_overfitting.R")
+source("Simulations_1.R")
 
 # Figure 2
-source("Simulations2_relativeaccuracy.R")
+source("Simulations_2.R")
 
-# Figure 3
-source("Simulations3_errorbias.R")
+# Figures 3 and 4
+source("Simulations_3.R")
 
-# Figure 4
-source("Simulations4_30taxatree.R")
+# Supplemental figure S2a
+source("Simulations_S2a.R")
 
-# Supplement S2
-source("SimulationsS1_10iterations.R")
+# Supplemental figure S2b
+source("Simulations_S2b.R")
 
-# Supplement S3
-source("SimulationsS2_5burst.R")
+# Supplemental figure S3
+source("Simulations_S3.R")
 ```
 
 The function `mvBM.R` is our implementation of Jeroen Smaers' mvBM function from the evomap package, which can be found [here](https://github.com/rgriff23/evomap/blob/master/R/mvBM.R). The function `ML_mvBM.R` is our modified version of mvBM, which is used in the first set of simulations (`Simulations1_overfitting.R`). 

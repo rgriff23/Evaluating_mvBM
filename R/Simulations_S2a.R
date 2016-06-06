@@ -7,8 +7,8 @@
 # Load necessary packages and functions
 library(phytools)
 library(geiger)
-source('~/Desktop/GitHub/Evaluating_mvBM/R/mvBM.R', chdir = TRUE)
-source('~/Desktop/GitHub/Evaluating_mvBM/R/ML_mvBM.R', chdir = TRUE)
+source('mvBM.R') # user must firt navigate to directory w all the R files
+source('ML_mvBM.R', chdir = TRUE)
 
 ##########################################################################################
 # SIMULATE TREES AND DATA
@@ -50,7 +50,7 @@ for (i in 1:nsims) {
 # PLOTS
 ##########################################################################################
 
-# Compare likelihoods with boxplot
+# Compare likelihoods with boxplot (Figure S2a)
 quartz()
 models <- c(rep("cvBM", length(lk.cvBM)), rep("mvBM", length(lk.cvBM)), rep("ML-mvBM", length(lk.cvBM)))
 models <- factor(models, levels=c("cvBM", "mvBM", "ML-mvBM"))

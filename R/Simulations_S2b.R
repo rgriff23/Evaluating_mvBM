@@ -6,7 +6,7 @@
 # Load necessary packages and functions
 library(phytools)
 library(geiger)
-source('~/Desktop/GitHub/Evaluating_mvBM/R/mvBM.R', chdir = TRUE)
+source('mvBM.R') # user must firt navigate to directory w all the R files
 
 ##########################################################################################
 # SIMULATE TREES AND DATA
@@ -18,7 +18,6 @@ set.seed(23)
 # Generate pure birth tree with 100 tips
 ntips <- 100
 tree <- pbtree(n=ntips)
-#quartz(); plot(tree); nodelabels(); edgelabels()
 
 # Simulate 1 continuous BM trait with sigma2=0.01
 sigma2 <- 0.01
@@ -41,7 +40,7 @@ for (i in 1:loops) {
 # PLOTS
 ##########################################################################################
 
-# Compare likelihoods with line plot
+# Compare likelihoods with line plot (Figure S2b)
 quartz()
 plot(lk ~ c(1:loops), type="l", col="black", xlab="Iteration", ylab="Log Likelihood")
 

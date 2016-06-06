@@ -1,12 +1,14 @@
-
-# This code attempts to replicate results from Figs. 3-4 of Smaers et al., 2016
+# This code shows that the R^2 is lower when fewer taxa (30 vs. 100) are simulated
+# and also that the R^2 of mvBMestimated vs. true ancestral states varies across
+# the branches of the tree, with branches near the tips exhibiting lower R^2 values.
+# Run time is ~35 mins on my Macbook Pro (2.6 GHz Intel Core i5, 8 GB 1600 MHz DDR3)
 ##########################################################################################
 # PREPARATIONS
 ##########################################################################################
 
 # Load necessary packages and functions
 library(phytools)
-source('~/Desktop/rcode/mvBM.R', chdir = TRUE)
+source('mvBM.R') # user must firt navigate to directory w all the R files
 
 ##########################################################################################
 # SIMULATE TREES AND DATA
@@ -15,21 +17,19 @@ source('~/Desktop/rcode/mvBM.R', chdir = TRUE)
 # Set seed
 set.seed(23)
 
-# Generate a pure birth trees with 30 tips
+# Generate a pure birth tree with 30 tips
 ntips <- 30
 tree <- pbtree(n=ntips)
-#quartz(); plot(tree); nodelabels(); edgelabels()
 
-# Simulate 1000 continuous BM traits with sigma2=0.01
-nsims <- 1000
+# Simulate 100 continuous BM traits with sigma2=0.01 for each branch
+nsims <- 100
 sigma2 <- 0.01
 
-# For each tree, simulate the 'five-burst' scenario where 5 randomly chosen branches
-# have rate of evolution sigma2=1
+# Simulate 'one-burst' scenario on each branch, where burst branch has sigma2=1
 burst.sims <- c()
-for (i in 1:nsims) {
+burstbranch <- sort(rep(1:length(tree$edge.length), nsims))
+for (i in 1:(length(tree$edge.length)*nsims)) {
   temp <- tree
-  burstbranch <- sample(1:(2*ntips - 2), size=5, replace=FALSE)
   temp$edge.length[burstbranch[i]] <- temp$edge.length[burstbranch[i]]*100
   burst.sims <- cbind(burst.sims, fastBM(temp, sig2=sigma2, internal=TRUE))
 }
@@ -39,15 +39,15 @@ burst.tips <- burst.sims[1:ntips,]
 burst.anc <- burst.sims[(ntips+1):(2*ntips-1),]
 
 ##########################################################################################
-# FIT cvBM AND mvBM (using ace REML rather than anc.Bayes for efficiency)
+# FIT mvBM (using ace REML rather than anc.Bayes for efficiency)
 ##########################################################################################
 
 # Store ancestral state reconstructions
 burst.mvBM <- list()
+
 for (i in 1:ncol(burst.tips)) {
   mvtree <- mvBM(burst.tips[,i], tree)
   burst.mvBM[[i]] <- ace(burst.tips[,i], mvtree, method="REML")
-  print(i)
 }
 
 ##########################################################################################
@@ -57,16 +57,21 @@ for (i in 1:ncol(burst.tips)) {
 # Compute R^2 for each estimated vs simulated
 R2 <- c()
 for (i in 1:length(burst.mvBM)) {
-  r2 <- summary(lm(burst.mvBM[[i]]$ace ~ burst.anc[,i]))
-  R2[i] <- r2$r.squared
-  print(i)
+	r2 <- summary(lm(burst.mvBM[[i]]$ace ~ burst.anc[,i]))
+	R2[i] <- r2$r.squared
 }
 
-# Plot distribution
-hist(R2, col="gray", xlab="R-squared", main="")
-abline(v=median(R2), lwd=2, lty=2)
+# Compute median R^2 for each branch
+medR2 <- c()
+for (i in 1:length(tree$edge.length)) {medR2[i] <- median(R2[burstbranch==i])}
+
+# Plot distribution of R^2 (Figure 3)
+hist(R2, col="darkgray", main="", xlab="R-squared")
+abline(v=median(R2), col="red", lwd=2)
+
+# Plot tree with color coded R^2 for each branch (Figure 4)
+plotBranchbyTrait(tree, medR2, "edges", palette="rainbow", title=expression(~Median~ italic(R^2)))
 
 ##########################################################################################
 # END
 ##########################################################################################
-

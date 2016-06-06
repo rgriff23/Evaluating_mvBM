@@ -1,13 +1,12 @@
-
-# This code demonstrates error in the ancestral state estimate near the site of a burst
-# With a 100 taxa tree and 5 simulations per branch, this code takes 2.5-3 hours to run
+# This code demonstrates error in ancestral state estimates near the site of a burst.
+# Run time is 2.5-3 hrs on my Macbook Pro (2.6 GHz Intel Core i5, 8 GB 1600 MHz DDR3)
 ##########################################################################################
 # PREPARATIONS
 ##########################################################################################
 
 # Load necessary packages and functions
 library(phytools)
-source('~/Desktop/GitHub/Evaluating_mvBM/R/mvBM.R', chdir = TRUE)
+source('mvBM.R') # user must firt navigate to directory w all the R files
 
 ##########################################################################################
 # SIMULATE TREES AND DATA
@@ -57,7 +56,7 @@ for (i in 1:ncol(burst.tips)) {
 # PLOTS
 ##########################################################################################
 
-# What is the median range of simulated values?
+# Median range of simulated values?
 spread <- c()
 for (i in 1:(length(tree$edge.length)*nsims)) {
   spread[i] <- abs(diff(range(burst.sims[,i])))
@@ -75,10 +74,8 @@ for (i in 1:(length(tree$edge.length)*nsims)) {
 }
 range(err)
 
-# Record ancestral state for node at base of each burst branch
-quartz()
+# Plot error as a function of burst size
 plot(err ~ burst, ylab="Error at base of burst branch", xlab="Trait change on burst branch")
-
 
 ##########################################################################################
 # END
