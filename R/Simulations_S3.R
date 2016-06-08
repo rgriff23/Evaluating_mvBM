@@ -1,4 +1,3 @@
-
 # This code attempts to replicate results from Figs. 3-4 of Smaers et al., 2016
 ##########################################################################################
 # PREPARATIONS

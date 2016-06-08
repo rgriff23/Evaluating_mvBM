@@ -17,7 +17,7 @@ install.packages("geiger")
 install.packages("phytools")
 ```
 
-Six separate simulation studies are included in our study. These simulations and associated figures can be replicated with the following code (assuming the R folder is your working directory).
+Five separate simulation studies are included in our study. These simulations and associated figures can be replicated with the following code (assuming the R folder is your working directory).
 
 ```
 # Figure 1
@@ -29,11 +29,8 @@ source("Simulations_2.R")
 # Figures 3 and 4
 source("Simulations_3.R")
 
-# Supplemental figure S2a
-source("Simulations_S2a.R")
-
-# Supplemental figure S2b
-source("Simulations_S2b.R")
+# Supplemental figure S2
+source("Simulations_S2.R")
 
 # Supplemental figure S3
 source("Simulations_S3.R")

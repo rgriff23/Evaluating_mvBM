@@ -1,7 +1,7 @@
 # This code shows that the R^2 is lower when fewer taxa (30 vs. 100) are simulated
 # and also that the R^2 of mvBMestimated vs. true ancestral states varies across
 # the branches of the tree, with branches near the tips exhibiting lower R^2 values.
-# Run time is ~35 mins on my Macbook Pro (2.6 GHz Intel Core i5, 8 GB 1600 MHz DDR3)
+# Run time is ~35 mins on my machine
 ##########################################################################################
 # PREPARATIONS
 ##########################################################################################

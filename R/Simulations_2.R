@@ -1,5 +1,5 @@
 # This code demonstrates error in ancestral state estimates near the site of a burst.
-# Run time is 2.5-3 hrs on my Macbook Pro (2.6 GHz Intel Core i5, 8 GB 1600 MHz DDR3)
+# Run time is 2.5-3 hrs on my machine
 ##########################################################################################
 # PREPARATIONS
 ##########################################################################################
