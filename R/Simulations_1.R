@@ -11,7 +11,7 @@
 
 # Load necessary packages and functions
 library(phytools)
-source('mvBM.R') # user must firt navigate to directory w all the R files
+source('~/Desktop/GitHub/Evaluating_mvBM/R/mvBM.R', chdir = TRUE)
 
 ##########################################################################################
 # SIMULATIONS
@@ -78,11 +78,15 @@ plot(tree)
 nodelabels(frame="circle", bg="white", font=2)
 edgelabels(text=c("1 ", "2 ", "3 ", "4 "), frame="rect", bg="black", col="white", font=2)
 mtext("A", adj=0, cex=2, line=1)
-plot(ml.err ~ burst, type="l", ylim=c(-0.1, 0.5), ylab="Error of estimate at node 5", xlab="Size of burst on branch 4", col="red")
-lines(pic.err ~ burst, col="blue")
-lines(mv.err ~ burst, col="purple")
+
+plot(ml.err ~ burst, ylim=c(-0.1, 0.5), ylab="Error of estimate at node 5", xlab="Size of burst on branch 4", col="red", cex=0.5)
+points(mv.err ~ burst, col="blue", cex=0.5)
+points(pic.err ~ burst, col="black", cex=0.5)
+abline(lm(ml.err ~ burst), col="red")
+abline(lm(mv.err ~ burst), col="blue")
+abline(lm(pic.err ~ burst), col="black")
 mtext("B", adj=0, cex=2, line=1)
-legend(1.15, 0.675, legend=c("cvBM", "mvBM", "PIC"), col=c("red", "purple", "blue"), lwd=3, xpd=TRUE, cex=0.6)
+legend(1.15, 0.675, legend=c("cvBM", "mvBM", "PIC"), col=c("red", "blue", "black"), pch=21, xpd=TRUE, cex=0.6)
 
 ##########################################################################################
 # END

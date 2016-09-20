@@ -1,12 +1,12 @@
 # This code demonstrates error in ancestral state estimates near the site of a burst.
-# Run time is 2.5-3 hrs on my machine
+# Run time is 2.5-3 hrs on my Macbook Pro (2.6 GHz Intel Core i5, 8 GB 1600 MHz DDR3)
 ##########################################################################################
 # PREPARATIONS
 ##########################################################################################
 
 # Load necessary packages and functions
 library(phytools)
-source('mvBM.R') # user must firt navigate to directory w all the R files
+source('~/Desktop/GitHub/Evaluating_mvBM/R/mvBM.R', chdir = TRUE)
 
 ##########################################################################################
 # SIMULATE TREES AND DATA

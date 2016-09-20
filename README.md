@@ -32,11 +32,9 @@ source("Simulations_3.R")
 # Supplemental figure S2
 source("Simulations_S2.R")
 
-# Supplemental figure S3
-source("Simulations_S3.R")
 ```
 
-The function `mvBM.R` is our implementation of Jeroen Smaers' mvBM function from the evomap package, which can be found [here](https://github.com/rgriff23/evomap/blob/master/R/mvBM.R). The function `ML_mvBM.R` is our modified version of mvBM, which is used in the first set of simulations (`Simulations1_overfitting.R`). 
+The function `mvBM.R` is our implementation of Jeroen Smaers' mvBM function from the evomap package, which can be found [here](https://github.com/rgriff23/evomap/blob/master/R/mvBM.R). 
 
 ## References
 

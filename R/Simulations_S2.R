@@ -1,14 +1,12 @@
-# This code shows that mvBM trees fit the data better than the original tree even when
-# data are simulated under cvBM.
+
+# This code attempts to replicate results from Figs. 3-4 of Smaers et al., 2016
 ##########################################################################################
-# LOAD PACKAGES AND FUNCTIONS
+# PREPARATIONS
 ##########################################################################################
 
 # Load necessary packages and functions
 library(phytools)
-library(geiger)
-source('mvBM.R') # user must firt navigate to directory w all the R files
-source('ML_mvBM.R', chdir = TRUE)
+source('~/Desktop/rcode/mvBM.R', chdir = TRUE)
 
 ##########################################################################################
 # SIMULATE TREES AND DATA
@@ -17,32 +15,36 @@ source('ML_mvBM.R', chdir = TRUE)
 # Set seed
 set.seed(23)
 
-# Generate pure birth tree with 100 tips
-ntips <- 100
+# Generate a pure birth trees with 30 tips
+ntips <- 30
 tree <- pbtree(n=ntips)
-#quartz(); plot(tree); nodelabels(); edgelabels()
 
-# Simulate 100 continuous BM traits with sigma2=0.01
-nsims <- 100
+# Simulate 1000 continuous BM traits with sigma2=0.01
+nsims <- 1000
 sigma2 <- 0.01
-bm.tips <- fastBM(tree, sig2=sigma2, nsim=nsims)
 
-##########################################################################################
-# FIT cvBM (regular tree), mvBM (mvBM tree), and ML-mvBM
-##########################################################################################
-
-lk.cvBM <- lk.mvBM <- lk.MLmvBM <- c()
-
+# For each tree, simulate '5-burst' scenario where 5 random branches have sigma2=1
+burst.sims <- c()
 for (i in 1:nsims) {
-  # Fit original tree
-  lk.cvBM[i] <- logLik(fitContinuous(tree, bm.tips[,i]))
-  # Fit mvBM to BM data
-  mvtree <- mvBM(bm.tips[,i], tree)
-  lk.mvBM[i] <- logLik(fitContinuous(mvtree, bm.tips[,i]))
-  # Fit ML_mvBM to BM data
-  MLmvtree <- ML_mvBM(bm.tips[,i], tree)
-  lk.MLmvBM[i] <- logLik(fitContinuous(MLmvtree, bm.tips[,i]))
-  # Monitor progress
+  temp <- tree
+  burstbranch <- sample(1:(2*ntips - 2), size=5, replace=FALSE)
+  temp$edge.length[burstbranch[i]] <- temp$edge.length[burstbranch[i]]*100
+  burst.sims <- cbind(burst.sims, fastBM(temp, sig2=sigma2, internal=TRUE))
+}
+
+# Separate simulated tips from simulated ancestral states
+burst.tips <- burst.sims[1:ntips,]
+burst.anc <- burst.sims[(ntips+1):(2*ntips-1),]
+
+##########################################################################################
+# FIT cvBM AND mvBM (using ace REML rather than anc.Bayes for efficiency)
+##########################################################################################
+
+# Store ancestral state reconstructions
+burst.mvBM <- list()
+for (i in 1:ncol(burst.tips)) {
+  mvtree <- mvBM(burst.tips[,i], tree)
+  burst.mvBM[[i]] <- ace(burst.tips[,i], mvtree, method="REML")
   print(i)
 }
 
@@ -50,13 +52,19 @@ for (i in 1:nsims) {
 # PLOTS
 ##########################################################################################
 
-# Compare likelihoods with boxplot (Figure S2a)
-quartz()
-models <- c(rep("cvBM", length(lk.cvBM)), rep("mvBM", length(lk.cvBM)), rep("ML-mvBM", length(lk.cvBM)))
-models <- factor(models, levels=c("cvBM", "mvBM", "ML-mvBM"))
-d <- data.frame(loglik=c(lk.cvBM, lk.mvBM, lk.MLmvBM), models=models)
-boxplot(loglik ~ models, data=d, col="gray", ylab="Log likelihood", xlab="Model")
+# Compute R^2 for each estimated vs simulated
+R2 <- c()
+for (i in 1:length(burst.mvBM)) {
+  r2 <- summary(lm(burst.mvBM[[i]]$ace ~ burst.anc[,i]))
+  R2[i] <- r2$r.squared
+  print(i)
+}
+
+# Plot distribution (Figure S3)
+hist(R2, col="gray", xlab="R-squared", main="")
+abline(v=median(R2), col="red", lwd=2)
 
 ##########################################################################################
 # END
 ##########################################################################################
+
